@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">PesoIdeal</string>
+
+    <!-- Strings related to IMC -->
+    <string name="prompt_peso">Peso (em kg)</string>
+    <string name="prompt_altura">Altura (em metros)</string>
+    <string name="prompt_idade">Idade (em anos)</string>
+    <string name="prompt_sexo">Sexo</string>
+    <string name="prompt_radio_masc">Masculino</string>
+    <string name="prompt_radio_fem">Feminino</string>
+    <string name="label_imc">IMC Calculado</string>
+    <string name="action_calcular">Calcular IMC</string>
+    <string name="action_calcular_short">Calcular</string>
+    <string name="error_invalid_peso">Valor inválido para peso</string>
+    <string name="error_invalid_altura">Valor inválido para altura</string>
+    <string name="error_invalid_idade">Valor inválido para idade</string>
+    <string name="error_field_required">This field is required</string>
+</resources>

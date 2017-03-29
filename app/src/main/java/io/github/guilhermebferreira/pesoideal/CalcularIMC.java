@@ -96,10 +96,26 @@ public class CalcularIMC extends AppCompatActivity  {
 
                 imcDisplay.setText(String.valueOf(selectedId));
 
+                //calculo adultos acima dos 15 anos
+                //calculo menino abaixo dos 15 anos
+                //calculo menina abaixo dos 15 anos
+
             }
 
         });
 
+    }
+
+    public String imcResultado(double peso, int idade, double altura){
+        //adulto
+        //abaixo de 17
+        //entre 17 e 18,49
+        //entre 18,5 e 24,99
+        //entre 25 e 29,99
+        //entre 30 e 34,99
+        //entre 35 e 39,99
+        //acima de 40
+        return (String) "Obesidade";
     }
 
     /**

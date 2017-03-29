@@ -36,6 +36,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
@@ -49,6 +51,10 @@ public class CalcularIMC extends AppCompatActivity  {
     private RadioGroup radioGroup;
     private RadioButton radioButton;
     private Button btnDisplay;
+    private TextView imcDisplay;
+    private EditText peso;
+    private EditText idade;
+    private EditText altura;
     private View mProgressView;
     private View mLoginFormView;
 
@@ -71,6 +77,7 @@ public class CalcularIMC extends AppCompatActivity  {
 
         radioGroup = (RadioGroup) findViewById(R.id.radioSexo);
         btnDisplay = (Button) findViewById(R.id.calc_button);
+        imcDisplay = (TextView) findViewById(R.id.imc_result);
 
         btnDisplay.setOnClickListener(new OnClickListener() {
 
@@ -80,11 +87,14 @@ public class CalcularIMC extends AppCompatActivity  {
                 // get selected radio button from radioGroup
                 int selectedId = radioGroup.getCheckedRadioButtonId();
 
+
                 // find the radiobutton by returned id
                 radioButton = (RadioButton) findViewById(selectedId);
 
                 Toast.makeText(CalcularIMC.this,
                         radioButton.getText(), Toast.LENGTH_SHORT).show();
+
+                imcDisplay.setText(String.valueOf(selectedId));
 
             }
 

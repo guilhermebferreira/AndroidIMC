@@ -3,42 +3,17 @@ package io.github.guilhermebferreira.pesoideal;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.text.TextUtils;
-import android.view.KeyEvent;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-import java.util.ArrayList;
-import java.util.List;
-
-import android.app.Activity;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
-
-import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via email/password.
@@ -52,9 +27,9 @@ public class CalcularIMC extends AppCompatActivity  {
     private RadioButton radioButton;
     private Button btnDisplay;
     private TextView imcDisplay;
-    private EditText peso;
-    private EditText idade;
-    private EditText altura;
+    private EditText pesoText;
+    private EditText idadeText;
+    private EditText alturaText;
     private View mProgressView;
     private View mLoginFormView;
 
@@ -78,11 +53,23 @@ public class CalcularIMC extends AppCompatActivity  {
         radioGroup = (RadioGroup) findViewById(R.id.radioSexo);
         btnDisplay = (Button) findViewById(R.id.calc_button);
         imcDisplay = (TextView) findViewById(R.id.imc_result);
+        pesoText = (EditText) findViewById(R.id.peso);
+        idadeText = (EditText) findViewById(R.id.idade);
+        alturaText = (EditText) findViewById(R.id.altura);
 
         btnDisplay.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
+                double imc, peso, altura;
+                int idade;
+                String resultado;
+
+                peso = Double.parseDouble(pesoText.getText().toString());
+                altura = Double.parseDouble(alturaText.getText().toString());
+                idade = Integer.parseInt(idadeText.getText().toString());
+
+                imc = peso / (Math.pow(altura, 2));
 
                 // get selected radio button from radioGroup
                 int selectedId = radioGroup.getCheckedRadioButtonId();
@@ -96,6 +83,15 @@ public class CalcularIMC extends AppCompatActivity  {
 
                 imcDisplay.setText(String.valueOf(selectedId));
 
+                if (idade > 15) {
+                    resultado = adultoResultado(imc);
+                } else if (selectedId == 1) {
+                    resultado = meninoResultado(idade, imc);
+                } else if (selectedId == 1) {
+                    resultado = meninaResultado(idade, imc);
+                } else {
+                    resultado = "Erro, verifique os dados informados";
+                }
                 //calculo adultos acima dos 15 anos
                 //calculo menino abaixo dos 15 anos
                 //calculo menina abaixo dos 15 anos
@@ -106,16 +102,127 @@ public class CalcularIMC extends AppCompatActivity  {
 
     }
 
-    public String imcResultado(double peso, int idade, double altura){
+    public String adultoResultado(double imc) {
         //adulto
-        //abaixo de 17
-        //entre 17 e 18,49
-        //entre 18,5 e 24,99
-        //entre 25 e 29,99
-        //entre 30 e 34,99
-        //entre 35 e 39,99
-        //acima de 40
-        return (String) "Obesidade";
+        //acima dos 15 anos
+        String response;
+        if (imc < 17) {
+            //abaixo de 17
+            response = "Muito abaixo do peso";
+        } else if (imc < 18.5) {
+            //entre 17 e 18,49
+            response = "Abaixo do peso";
+        } else if (imc < 25) {
+            //entre 18,5 e 24,99
+            response = "Peso normal";
+        } else if (imc < 30) {
+            //entre 25 e 29,99
+            response = "Acima do peso";
+        } else if (imc < 35) {
+            //entre 30 e 34,99
+            response = "Obesidade I";
+        } else if (imc < 40) {
+            //entre 35 e 39,99
+            response = "Obesidade II (severa)";
+        } else {
+            //acima de 40
+            response = "Obesidade III (mórbida)";
+        }
+        return response;
+    }
+
+    public String meninoResultado(int idade, double imc) {
+        //menino
+        // até os 15 anos
+        String response;
+        //a tabela base não disponibilizou informações que caracterizassem "Abaixo do peso"
+        switch (idade) {
+            case 6:
+                response = this.imcInfantil(imc, 16.6, 18);
+                break;
+            case 7:
+                response = this.imcInfantil(imc, 17.3, 19.1);
+                break;
+            case 8:
+                response = this.imcInfantil(imc, 16.7, 20.3);//um pouco estranho esse ponto fora da curva
+                break;
+            case 9:
+                response = this.imcInfantil(imc, 18.8, 21.4);
+                break;
+            case 10:
+                response = this.imcInfantil(imc, 19.6, 22.5);
+                break;
+            case 11:
+                response = this.imcInfantil(imc, 20.3, 23.7);
+                break;
+            case 12:
+                response = this.imcInfantil(imc, 21.1, 24.8);
+                break;
+            case 13:
+                response = this.imcInfantil(imc, 21.9, 25.9);
+                break;
+            case 14:
+                response = this.imcInfantil(imc, 22.7, 26.9);
+                break;
+            case 15:
+                response = this.imcInfantil(imc, 23.6, 27.7);
+                break;
+            default:
+                response = "Erro, verifique os dados informados";
+        }
+        return response;
+    }
+
+    public String meninaResultado(int idade, double imc) {
+        //menina
+        // até os 15 anos
+        String response;
+        //a tabela base não disponibilizou informações que caracterizassem "Abaixo do peso"
+        switch (idade) {
+            case 6:
+                response = this.imcInfantil(imc, 16.1, 17.4);
+                break;
+            case 7:
+                response = this.imcInfantil(imc, 17.1, 18.9);
+                break;
+            case 8:
+                response = this.imcInfantil(imc, 18.1, 20.3);
+                break;
+            case 9:
+                response = this.imcInfantil(imc, 19.1, 21.7);
+                break;
+            case 10:
+                response = this.imcInfantil(imc, 20.1, 23.2);
+                break;
+            case 11:
+                response = this.imcInfantil(imc, 21.1, 24.5);
+                break;
+            case 12:
+                response = this.imcInfantil(imc, 22.1, 25.9);
+                break;
+            case 13:
+                response = this.imcInfantil(imc, 23, 27.7);
+                break;
+            case 14:
+                response = this.imcInfantil(imc, 23.8, 27.9);
+                break;
+            case 15:
+                response = this.imcInfantil(imc, 24.2, 28.8);
+                break;
+            default:
+                response = "Erro, verifique os dados informados";
+        }
+        return response;
+    }
+
+    private String imcInfantil(double imc, double sobrepeso, double obesidade) {
+        if (imc <= sobrepeso) {
+            return "Peso normal";
+        } else if (imc <= obesidade) {
+            return "Sobrepeso";
+        } else {
+            return "Obesidade";
+        }
     }
 
     /**

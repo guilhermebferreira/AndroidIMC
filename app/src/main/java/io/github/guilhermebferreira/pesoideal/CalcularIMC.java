@@ -3,9 +3,13 @@ package io.github.guilhermebferreira.pesoideal;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -117,6 +121,8 @@ public class CalcularIMC extends AppCompatActivity {
                     }
                 }
 
+                startNotification();
+
 
                 imcDisplay.setText(resultado);
             }
@@ -128,6 +134,17 @@ public class CalcularIMC extends AppCompatActivity {
     private void setWarning(String message) {
         Toast.makeText(CalcularIMC.this,
                 message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void startNotification(){
+        Context context = CalcularIMC.this;
+        Notification notify = new NotificationCompat.Builder(context)
+                .setTicker("This is important")
+                .setSmallIcon(android.R.drawable.stat_notify_more)
+                .setWhen(System.currentTimeMillis())
+                .build();
+
+
     }
 
 

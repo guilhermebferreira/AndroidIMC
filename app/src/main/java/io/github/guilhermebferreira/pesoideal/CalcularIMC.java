@@ -53,16 +53,28 @@ public class CalcularIMC extends AppCompatActivity {
         btnDisplay = (Button) findViewById(R.id.calc_button);
         imcDisplay = (TextView) findViewById(R.id.imc_result);
         pesoText = (EditText) findViewById(R.id.peso);
-        final String pesoStr = pesoText.getText().toString();
         idadeText = (EditText) findViewById(R.id.idade);
-        final String idadeStr = idadeText.getText().toString();
         alturaText = (EditText) findViewById(R.id.altura);
-        final String alturaStr = alturaText.getText().toString();
 
         btnDisplay.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
+
+                String pesoStr = pesoText.getText().toString();
+                String alturaStr = alturaText.getText().toString();
+                String idadeStr = idadeText.getText().toString();
+                String sexoStr = "";
+
+                // get selected radio button from radioGroup
+                int selectedId = radioGroup.getCheckedRadioButtonId();
+                // find the radiobutton by returned id
+                if (selectedId > 0) {
+                    radioButton = (RadioButton) findViewById(selectedId);
+                    sexoStr = radioButton.getText().toString();
+                }
+
+
                 double imc, peso, altura;
                 int idade;
                 imc = peso = altura = idade = 0;
@@ -79,37 +91,34 @@ public class CalcularIMC extends AppCompatActivity {
                     setWarning("Informe o valor da idade");
                 }
 
-
                 peso = Double.parseDouble(pesoStr);
                 altura = Double.parseDouble(alturaStr);
                 idade = Integer.parseInt(idadeStr);
 
                 imc = peso / (Math.pow(altura, 2));
 
-                // get selected radio button from radioGroup
-                int selectedId = radioGroup.getCheckedRadioButtonId();
 
 
-                // find the radiobutton by returned id
-                radioButton = (RadioButton) findViewById(selectedId);
 
                 if (idade > 15) {
                     //calculo adultos acima dos 15 anos
                     resultado = adultoResultado(imc);
-                } else if (radioButton.getText().toString() == "Masculino") {
-                    //calculo menino abaixo dos 15 anos
-                    resultado = meninoResultado(idade, imc);
-                } else if (radioButton.getText().toString() == "Feminino") {
-                    //calculo menina abaixo dos 15 anos
-                    resultado = meninaResultado(idade, imc);
+                } else if (TextUtils.isEmpty(sexoStr)) {
+                    resultado = "Necessário informar o sexo";
                 } else {
-                    resultado = "Erro, verifique os dados informados";
+                    if (sexoStr == "Masculino") {
+                        //calculo menino abaixo dos 15 anos
+                        resultado = meninoResultado(idade, imc);
+                    } else if (sexoStr == "Feminino") {
+                        //calculo menina abaixo dos 15 anos
+                        resultado = meninaResultado(idade, imc);
+                    } else {
+                        resultado = "Erro, verifique os dados informados";
+                    }
                 }
 
 
                 imcDisplay.setText(resultado);
-
-
             }
 
         });
@@ -120,6 +129,7 @@ public class CalcularIMC extends AppCompatActivity {
         Toast.makeText(CalcularIMC.this,
                 message, Toast.LENGTH_SHORT).show();
     }
+
 
     public String adultoResultado(double imc) {
         //adulto

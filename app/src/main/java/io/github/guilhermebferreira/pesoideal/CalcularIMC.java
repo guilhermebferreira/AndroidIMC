@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -18,9 +19,7 @@ import android.widget.Toast;
 /**
  * A login screen that offers login via email/password.
  */
-public class CalcularIMC extends AppCompatActivity  {
-
-
+public class CalcularIMC extends AppCompatActivity {
 
 
     private RadioGroup radioGroup;
@@ -54,8 +53,11 @@ public class CalcularIMC extends AppCompatActivity  {
         btnDisplay = (Button) findViewById(R.id.calc_button);
         imcDisplay = (TextView) findViewById(R.id.imc_result);
         pesoText = (EditText) findViewById(R.id.peso);
+        final String pesoStr = pesoText.getText().toString();
         idadeText = (EditText) findViewById(R.id.idade);
+        final String idadeStr = idadeText.getText().toString();
         alturaText = (EditText) findViewById(R.id.altura);
+        final String alturaStr = alturaText.getText().toString();
 
         btnDisplay.setOnClickListener(new OnClickListener() {
 
@@ -63,11 +65,24 @@ public class CalcularIMC extends AppCompatActivity  {
             public void onClick(View v) {
                 double imc, peso, altura;
                 int idade;
+                imc = peso = altura = idade = 0;
                 String resultado;
 
-                peso = Double.parseDouble(pesoText.getText().toString());
-                altura = Double.parseDouble(alturaText.getText().toString());
-                idade = Integer.parseInt(idadeText.getText().toString());
+                if (TextUtils.isEmpty(pesoStr)) {
+
+                    setWarning("Informe o valor do peso");
+                } else if (TextUtils.isEmpty(alturaStr)) {
+
+                    setWarning("Informe o valor da altura");
+                } else if (TextUtils.isEmpty(idadeStr)) {
+
+                    setWarning("Informe o valor da idade");
+                }
+
+
+                peso = Double.parseDouble(pesoStr);
+                altura = Double.parseDouble(alturaStr);
+                idade = Integer.parseInt(idadeStr);
 
                 imc = peso / (Math.pow(altura, 2));
 
@@ -78,28 +93,32 @@ public class CalcularIMC extends AppCompatActivity  {
                 // find the radiobutton by returned id
                 radioButton = (RadioButton) findViewById(selectedId);
 
-                Toast.makeText(CalcularIMC.this,
-                        radioButton.getText(), Toast.LENGTH_SHORT).show();
-
-                imcDisplay.setText(String.valueOf(selectedId));
-
                 if (idade > 15) {
+                    //calculo adultos acima dos 15 anos
                     resultado = adultoResultado(imc);
-                } else if (selectedId == 1) {
+                } else if (radioButton.getText().toString() == "Masculino") {
+                    //calculo menino abaixo dos 15 anos
                     resultado = meninoResultado(idade, imc);
-                } else if (selectedId == 1) {
+                } else if (radioButton.getText().toString() == "Feminino") {
+                    //calculo menina abaixo dos 15 anos
                     resultado = meninaResultado(idade, imc);
                 } else {
                     resultado = "Erro, verifique os dados informados";
                 }
-                //calculo adultos acima dos 15 anos
-                //calculo menino abaixo dos 15 anos
-                //calculo menina abaixo dos 15 anos
+
+
+                imcDisplay.setText(resultado);
+
 
             }
 
         });
 
+    }
+
+    private void setWarning(String message) {
+        Toast.makeText(CalcularIMC.this,
+                message, Toast.LENGTH_SHORT).show();
     }
 
     public String adultoResultado(double imc) {

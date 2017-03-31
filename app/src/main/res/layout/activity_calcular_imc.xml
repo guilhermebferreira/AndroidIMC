@@ -16,13 +16,6 @@
         -->
 
     <!-- Login progress -->
-    <ProgressBar
-        android:id="@+id/calc_progress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone" />
 
     <ScrollView
         android:id="@+id/imc_form"
@@ -143,22 +136,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/action_calcular"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/label_imc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/label_imc"
-                android:textAlignment="center" />
-
-            <TextView
-                android:id="@+id/imc_result"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textAlignment="center"
-                android:textSize="24sp"
                 android:textStyle="bold" />
 
         </LinearLayout>

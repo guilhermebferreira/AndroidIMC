@@ -1,16 +1,16 @@
 package io.github.guilhermebferreira.pesoideal;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
-import android.os.Build;
+import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -40,11 +40,6 @@ public class CalcularIMC extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-       /* mLoginFormView = findViewById(R.id.imc_form);
-        mProgressView = findViewById(R.id.calc_progress);
-
-        showProgress(true);*/
-
         setContentView(R.layout.activity_calcular_imc);
 
         addListenerOnButton();
@@ -55,7 +50,6 @@ public class CalcularIMC extends AppCompatActivity {
 
         radioGroup = (RadioGroup) findViewById(R.id.radioSexo);
         btnDisplay = (Button) findViewById(R.id.calc_button);
-        imcDisplay = (TextView) findViewById(R.id.imc_result);
         pesoText = (EditText) findViewById(R.id.peso);
         idadeText = (EditText) findViewById(R.id.idade);
         alturaText = (EditText) findViewById(R.id.altura);
@@ -112,19 +106,26 @@ public class CalcularIMC extends AppCompatActivity {
                 } else {
                     if (sexoStr == "Masculino") {
                         //calculo menino abaixo dos 15 anos
+                        Log.d("Send", "imc " + String.valueOf(imc));
+                        Log.d("Send", "idade " + String.valueOf(idade));
+                        Log.d("Send", "sexo " + "Masculino");
                         resultado = meninoResultado(idade, imc);
-                    } else if (sexoStr == "Feminino") {
+                    } else {// if (sexoStr == "Feminino") {
                         //calculo menina abaixo dos 15 anos
+                        Log.d("Send", "imc " + String.valueOf(imc));
+                        Log.d("Send", "idade " + String.valueOf(idade));
+                        Log.d("Send", "sexo " + "Feminino");
                         resultado = meninaResultado(idade, imc);
-                    } else {
-                        resultado = "Erro, verifique os dados informados";
                     }
                 }
 
-                startNotification();
+                Log.d("Send", "resultado" + resultado);
+
+                setWarning("o IMC foi calculado");
+
+                sendNotification("o IMC foi calculado.", resultado);
 
 
-                imcDisplay.setText(resultado);
             }
 
         });
@@ -136,15 +137,28 @@ public class CalcularIMC extends AppCompatActivity {
                 message, Toast.LENGTH_SHORT).show();
     }
 
-    private void startNotification(){
-        Context context = CalcularIMC.this;
-        Notification notify = new NotificationCompat.Builder(context)
-                .setTicker("This is important")
-                .setSmallIcon(android.R.drawable.stat_notify_more)
-                .setWhen(System.currentTimeMillis())
-                .build();
+    private void sendNotification(String messageBody, String messageIntent) {
+        Intent intent = new Intent(this, ResultadoActivity.class);
+        Log.d("Send", "msg" + messageBody);
+        Toast.makeText(getApplicationContext(), "msg" + messageBody, Toast.LENGTH_SHORT);
+        intent.putExtra("msg", messageIntent);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
+                PendingIntent.FLAG_ONE_SHOT);
 
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        android.support.v4.app.NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("Peso Ideal")
+                .setContentText(messageBody)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setContentIntent(pendingIntent);
 
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(0, notificationBuilder.build());
     }
 
 
@@ -271,41 +285,6 @@ public class CalcularIMC extends AppCompatActivity {
         }
     }
 
-    /**
-     * Shows the progress UI and hides the login form.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
-    }
 
 }
 

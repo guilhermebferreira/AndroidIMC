@@ -1,10 +1,10 @@
-#IMC
+# IMC
 
 Aplicativo desenvolvido para fins de estudo e aprendizado, elaborado inicialmente como parte de um curso.
 
 O cálculo do IMC segue as seguintes tabelas
 
-##Adultos acima dos 15 anos de idade
+## Adultos acima dos 15 anos de idade
 
 IMC|Situação
 ------------ | -------------
@@ -16,7 +16,7 @@ Entre 30 e 34,99|Obesidade I
 Entre 35 e 39,99|Obesidade II (severa)
 Acima de 40|Obesidade III (mórbida)
 
-##Meninos abaixo até os 15 anos de idade
+## Meninos abaixo até os 15 anos de idade
 
 Idade|Normal|Sobrepeso|Obesidade
 ------------ | ------------- | ------------- | -------------
@@ -31,7 +31,7 @@ Idade|Normal|Sobrepeso|Obesidade
 14|19,2|mais de 22,7|mais de 26,9
 15|19,9|mais de 23,6|mais de 27,7
 
-##Meninas abaixo até os 15 anos de idade
+## Meninas abaixo até os 15 anos de idade
 
 Idade|Normal|Sobrepeso|Obesidade
 ------------ | ------------- | ------------- | -------------
